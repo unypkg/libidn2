@@ -12,7 +12,7 @@ apt install -y git make autoconf automake libtool gettext autopoint gperf genget
 wget -qO- uny.nu/pkg | bash -s buildsys
 
 ### Installing build dependencies
-unyp install libunistring
+unyp install libunistring gperf
 
 ### Getting Variables from files
 UNY_AUTO_PAT="$(cat UNY_AUTO_PAT)"
