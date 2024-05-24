@@ -58,9 +58,9 @@ git_clone_source_repo
 cd "$pkgname" || exit
 ./bootstrap --skip-po
 ./configure --enable-gcc-warnings=error --enable-valgrind-tests
-make -j$(nproc) V=1 -k check VERBOSE=t
+make -j"$(nproc)" V=1 -k check VERBOSE=t
 make -C doc compare-makefile
-make -j$(nproc) syntax-check
+make -j"$(nproc)" syntax-check
 make abi-check
 make dist
 
