@@ -6,8 +6,15 @@ set -vx
 ######################################################################################################################
 ### Setup Build System and GitHub
 
-apt install -y git make autoconf automake libtool gettext autopoint gperf gengetopt help2man \
-    texinfo texlive gtk-doc-tools
+#apt install -y git make autoconf automake libtool gettext autopoint gperf gengetopt help2man \
+#    texinfo texlive gtk-doc-tools
+apt-get update -qq
+env DEBIAN_FRONTEND=noninteractive apt-get install -y -q make git autoconf automake libtool \
+    gettext autopoint cvs texinfo texlive texlive-plain-generic texlive-extra-utils help2man \
+    gtk-doc-tools dblatex valgrind gengetopt transfig mono-mcs gperf default-jdk-headless abigail-tools
+
+git clone https://gitlab.com/libidn/gnulib-mirror.git /usr/local/gnulib
+GNULIB_REFDIR=/usr/local/gnulib
 
 wget -qO- uny.nu/pkg | bash -s buildsys
 
@@ -50,7 +57,17 @@ git_clone_source_repo
 
 cd "$pkgname" || exit
 ./bootstrap --skip-po
+./configure --enable-gcc-warnings=error --enable-valgrind-tests
+make -j$(nproc) V=1 -k check VERBOSE=t
+make -C doc compare-makefile
+make -j$(nproc) syntax-check
+make abi-check
+make dist
+
 cd /uny/sources || exit
+tar xf libidn2/libidn2-2.3.7.tar.gz
+rm -rf libidn2
+mv libidn2-2.3.7 libidn2
 
 version_details
 archiving_source
